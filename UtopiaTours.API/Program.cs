@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Build.Execution;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using UtopiaTours.API;
 using UtopiaTours.API.DTOs;
 using static UtopiaTours.API.DTOs.BookingDTO;
