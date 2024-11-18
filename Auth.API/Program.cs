@@ -1,17 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Build.Execution;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using UtopiaTours.API;
-using UtopiaTours.API.DTOs;
-using static UtopiaTours.API.DTOs.BookingDTO;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-string connectionString = "Server=localhost;Database=UtopiaTours;User=root;Password=root";
-
+// Add JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -26,13 +21,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
-
-
-
-//builder.Services.AddDbContext<UtopiaToursContext>(options => options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32))));
-builder.Services.AddDbContext<UtopiaToursContext>();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+// Register JwtService for dependency injection
+builder.Services.AddSingleton<JwtService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

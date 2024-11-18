@@ -13,14 +13,13 @@ namespace UtopiaTours.Domain
         [Key]
         public int Id { get; set; }
 
-        //   [ForeignKey("Passenger")]
         public int PassengerId { get; set; }
         public Passenger Passenger { get; set; } = new Passenger();
 
-        //  [ForeignKey("Schedule")]
+       
         public int ScheduleId { get; set; }
-
         public Schedule Schedule { get; set; }
+
         public DateTime BookingDt { get; set; }
     }
 
@@ -41,8 +40,10 @@ namespace UtopiaTours.Domain
         public int Id { get; set; }
         public int DestinationId { get; set; }
         public Destination Destination { get; set; }
+
         public int FleetId { get; set; }
         public Fleet Fleet { get; set; }
+
         public DateTime ScheduleDt { get; set; }
 
        
@@ -63,7 +64,6 @@ namespace UtopiaTours.Domain
         public string Registration { get; set; }
 
         public int CoachTypeId { get; set; }    
-
         public CoachType CoachType { get; set; }
     }
 

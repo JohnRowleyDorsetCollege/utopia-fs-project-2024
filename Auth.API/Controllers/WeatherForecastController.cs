@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UtopiaTours.API.Controllers
+namespace Auth.API.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {

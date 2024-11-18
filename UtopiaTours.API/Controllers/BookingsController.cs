@@ -32,12 +32,11 @@ namespace UtopiaTours.API.Controllers
         {
            // return await _context.Bookings.Include(b=>b.Schedule).Include(p=>p.Passenger).ToListAsync();
             return await _context.Bookings
-                .Include(b=>b.Schedule)
-                .ThenInclude(d=>d.Destination)
+                .Include(b => b.Schedule)
+                .ThenInclude(d => d.Destination)
                 .Include(b => b.Schedule)
                 .ThenInclude(f => f.Fleet)
-
-                .Include(p=>p.Passenger)
+                .Include(p => p.Passenger)
                 .ToListAsync();
         }
 
