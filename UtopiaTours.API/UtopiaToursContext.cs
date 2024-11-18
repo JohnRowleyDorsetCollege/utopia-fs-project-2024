@@ -6,6 +6,8 @@ namespace UtopiaTours.API
     public class UtopiaToursContext : DbContext
     {
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Schedule> Schedule { get; set; }
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -22,6 +24,11 @@ namespace UtopiaTours.API
             {
                 entityType.SetTableName(entityType.DisplayName());
             }
+         
+        //   modelBuilder.Entity<Booking>().HasOne(b=>b.Schedule).WithMany(s=>s.Bookings).HasForeignKey(b=>b.ScheduleId);
+
+
+
           //  base.OnModelCreating(modelBuilder); 
         }
     }
