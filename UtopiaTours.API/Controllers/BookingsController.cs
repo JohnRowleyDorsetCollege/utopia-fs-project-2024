@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UtopiaTours.API;
+using UtopiaTours.API.DTOs;
 using UtopiaTours.Domain;
 
 namespace UtopiaTours.API.Controllers
@@ -16,9 +18,12 @@ namespace UtopiaTours.API.Controllers
     {
         private readonly UtopiaToursContext _context;
 
-        public BookingsController(UtopiaToursContext context)
+        private readonly IMapper _mapper;
+
+        public BookingsController(UtopiaToursContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Bookings
@@ -35,6 +40,24 @@ namespace UtopiaTours.API.Controllers
                 .Include(p=>p.Passenger)
                 .ToListAsync();
         }
+
+        // GET: api/Bookings
+        [HttpGet("BookingDTOs")]
+        public async Task<ActionResult<IEnumerable<BookingDTO>>> BookingDTOs()
+        {
+            // return await _context.Bookings.Include(b=>b.Schedule).Include(p=>p.Passenger).ToListAsync();
+            var bookings =  await _context.Bookings
+                .Include(b => b.Schedule)
+                .ThenInclude(d => d.Destination)
+                .Include(b => b.Schedule)
+                .ThenInclude(f => f.Fleet)
+
+                .Include(p => p.Passenger)
+                .ToListAsync();
+
+            return _mapper.Map<List<BookingDTO>>(bookings);
+        }
+
 
         // GET: api/Bookings/5
         [HttpGet("{id}")]

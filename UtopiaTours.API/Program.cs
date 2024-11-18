@@ -1,6 +1,8 @@
+using Microsoft.Build.Execution;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using UtopiaTours.API;
+using static UtopiaTours.API.DTOs.BookingDTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,7 @@ string connectionString = "Server=localhost;Database=UtopiaTours;User=root;Passw
 
 //builder.Services.AddDbContext<UtopiaToursContext>(options => options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 32))));
 builder.Services.AddDbContext<UtopiaToursContext>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
