@@ -61,5 +61,16 @@ namespace UtopiaTours.Domain
         [Key]
         public int Id { get; set; }
         public string Registration { get; set; }
+
+        public int CoachTypeId { get; set; }    
+
+        public CoachType CoachType { get; set; }
+    }
+
+    public class CoachType
+    {
+        [Key]
+        public int Id { get; set; }
+        public int Capacity { get; set; }
     }
 }
