@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using UtopiaTours.API;
 using UtopiaTours.API.DTOs;
 using UtopiaTours.Domain;
@@ -20,16 +21,21 @@ namespace UtopiaTours.API.Controllers
 
         private readonly IMapper _mapper;
 
-        public BookingsController(UtopiaToursContext context, IMapper mapper)
+        private IMemoryCache _cache;
+        public BookingsController(UtopiaToursContext context, IMapper mapper, IMemoryCache cache)
         {
             _context = context;
             _mapper = mapper;
+            _cache = cache;
         }
 
         // GET: api/Bookings
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
+
+
+
            // return await _context.Bookings.Include(b=>b.Schedule).Include(p=>p.Passenger).ToListAsync();
             return await _context.Bookings
                 .Include(b => b.Schedule)

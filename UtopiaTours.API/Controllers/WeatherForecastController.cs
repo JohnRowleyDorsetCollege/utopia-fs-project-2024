@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using UtopiaTours.API;
 
 namespace UtopiaTours.API.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
@@ -15,9 +15,11 @@ namespace UtopiaTours.API.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private readonly IMemoryCache _cache;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMemoryCache cache)
         {
             _logger = logger;
+            _cache = cache;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -30,6 +32,39 @@ namespace UtopiaTours.API.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpPost(Name = "GetWeatherForecastFromCache")]
+        public IActionResult GetCache()
+        {
+            Console.WriteLine("CAching");
+         
+            if (!_cache.TryGetValue("WeatherData", out WeatherForecast[] weatherData))
+            {
+               
+                var rng = new Random();
+                weatherData = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+                {
+                    Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    TemperatureC = Random.Shared.Next(-20, 55),
+                    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                })
+             .ToArray();
+
+
+            }
+
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
+           
+            Console.WriteLine(weatherData);
+         
+            _cache.Set("WeatherData", weatherData, cacheOptions);
+
+
+            return Ok(weatherData);
         }
     }
 }
