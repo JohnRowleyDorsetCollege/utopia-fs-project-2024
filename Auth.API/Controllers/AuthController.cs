@@ -25,7 +25,7 @@ namespace Auth.API.Controllers
         public IActionResult Login([FromBody] LoginRequest request)
         {
             // Replace with actual user validation logic
-            if (request.Username == "testuser" && request.Password == "password")
+            if (request.Username == "xxxx" && request.Password == "yyyy")
             {
                 var token = _jwtService.GenerateToken(request.Username);
                 return Ok(new { Token = token });
