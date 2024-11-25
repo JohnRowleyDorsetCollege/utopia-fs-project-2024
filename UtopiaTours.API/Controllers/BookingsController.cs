@@ -34,16 +34,33 @@ namespace UtopiaTours.API.Controllers
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
 
+            if (!_cache.TryGetValue("BookingData", out IEnumerable<Booking> bookingData))
+            {
+
+                var rng = new Random();
+                bookingData =  await _context.Bookings
+                    .Include(b => b.Schedule)
+                    .ThenInclude(d => d.Destination)
+                    .Include(b => b.Schedule)
+                    .ThenInclude(f => f.Fleet)
+                    .Include(p => p.Passenger)
+                    .ToListAsync();
 
 
-           // return await _context.Bookings.Include(b=>b.Schedule).Include(p=>p.Passenger).ToListAsync();
-            return await _context.Bookings
-                .Include(b => b.Schedule)
-                .ThenInclude(d => d.Destination)
-                .Include(b => b.Schedule)
-                .ThenInclude(f => f.Fleet)
-                .Include(p => p.Passenger)
-                .ToListAsync();
+            }
+
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
+
+            Console.WriteLine(bookingData);
+
+            _cache.Set("BookingData", bookingData, cacheOptions);
+
+
+            return Ok(bookingData);
+
         }
 
         // GET: api/Bookings
@@ -66,16 +83,37 @@ namespace UtopiaTours.API.Controllers
 
         // GET: api/Bookings/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Booking>> GetBooking(int id)
+        public async Task<ActionResult<BookingDTO>> GetBooking(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            string bookingCacheKey = $"BookingRecord-{id}";
+           
+            if (!_cache.TryGetValue(bookingCacheKey, out Booking booking))
+            {
+                booking = await _context.Bookings.Include(b => b.Schedule)
+                .ThenInclude(d => d.Destination)
+                .Include(b => b.Schedule)
+                .ThenInclude(f => f.Fleet)
+                .Include(p => p.Passenger).Where(x=>x.Id==id).FirstOrDefaultAsync();
+               
+                var cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+                };
+
+                _cache.Set("bookingKey", bookingCacheKey, cacheOptions);
+            }
+                
 
             if (booking == null)
             {
                 return NotFound();
             }
 
-            return booking;
+            return _mapper.Map<BookingDTO>(booking);
+
+
+            
+
         }
 
         // PUT: api/Bookings/5
