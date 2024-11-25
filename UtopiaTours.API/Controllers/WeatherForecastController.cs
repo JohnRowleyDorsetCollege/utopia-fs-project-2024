@@ -23,7 +23,7 @@ namespace UtopiaTours.API.Controllers
             _cache = cache;
         }
 
-        [Authorize]
+        
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -36,7 +36,8 @@ namespace UtopiaTours.API.Controllers
             .ToArray();
         }
 
-        [HttpPost(Name = "GetWeatherForecastFromCache")]
+        [Authorize]
+        [HttpGet("cache")]
         public IActionResult GetCache()
         {
             Console.WriteLine("CAching");
